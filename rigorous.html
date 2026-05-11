@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantum Echoes — With the Mathematics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root{--bg:#080808;--border:#1e1e1e;--text:#e8e2d9;--text-dim:#8a8278;
+      --text-faint:#3a3733;--gold:#c9a84c;--gold-dim:#7a6330;--gold-faint:#1e1608;
+      --wave-color:#c9a84c;--wave-op:0.07;}
+    @media(prefers-color-scheme:light){
+      :root{--bg:#f5f2ec;--border:#d0c9be;--text:#1a1714;--text-dim:#5a5550;
+        --text-faint:#a09890;--gold:#7a5a18;--gold-dim:#9a7428;--gold-faint:#ecddb8;
+        --wave-color:#7a5a18;--wave-op:0.05;}}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif;
+      font-size:20px;line-height:1.8;overflow-x:hidden;}
+    canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;
+      opacity:var(--wave-op);z-index:0;}
+    #progress{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--gold);
+      z-index:100;transition:width .1s linear;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:50;padding:1.2rem 2rem;display:flex;
+      justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);
+      background:var(--bg);opacity:.96;}
+    nav a{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.2em;
+      text-transform:uppercase;color:var(--gold-dim);text-decoration:none;transition:color .2s;}
+    nav a:hover{color:var(--gold);}
+    .nav-title{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-style:italic;
+      color:var(--text-dim);font-weight:300;}
+    .container{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 2rem;}
+    header{position:relative;min-height:100vh;display:flex;flex-direction:column;
+      justify-content:center;padding:8rem 2rem 4rem;max-width:760px;margin:0 auto;}
+    .eyebrow{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.25em;
+      text-transform:uppercase;color:var(--gold);margin-bottom:2rem;
+      opacity:0;animation:fadeUp 1s ease .3s forwards;}
+    h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:300;line-height:1.1;
+      letter-spacing:-.01em;color:var(--text);margin-bottom:1.2rem;max-width:18ch;
+      opacity:0;animation:fadeUp 1s ease .5s forwards;}
+    h1 em{font-style:italic;color:var(--gold);}
+    .subtitle{font-size:1.05rem;color:var(--text-dim);font-style:italic;font-weight:300;
+      max-width:520px;line-height:1.7;opacity:0;animation:fadeUp 1s ease .7s forwards;}
+    .scroll-hint{position:absolute;bottom:3rem;left:2rem;font-family:'DM Mono',monospace;
+      font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-faint);
+      display:flex;align-items:center;gap:1rem;opacity:0;animation:fadeUp 1s ease 1.2s forwards;}
+    .scroll-hint::after{content:'';display:block;width:40px;height:1px;background:var(--text-faint);}
+    .intro{padding:5rem 0 4rem;border-top:1px solid var(--border);}
+    .intro p{font-size:1.15rem;line-height:1.9;color:var(--text);font-weight:300;margin-bottom:1.4rem;}
+    .intro p:last-child{margin-bottom:0;}
+    .movement{padding:5rem 0;border-top:1px solid var(--border);
+      opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+    .movement.visible{opacity:1;transform:translateY(0);}
+    .movement-number{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.3em;
+      text-transform:uppercase;color:var(--gold-dim);margin-bottom:.6rem;}
+    .movement h2{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:300;line-height:1.15;
+      color:var(--text);margin-bottom:.4rem;letter-spacing:-.01em;}
+    .movement h2 em{font-style:italic;color:var(--gold);}
+    .movement h3{font-size:1rem;font-weight:300;font-style:italic;color:var(--text-dim);margin-bottom:2.5rem;}
+    .movement p{font-size:1rem;line-height:1.85;color:var(--text-dim);margin-bottom:1.2rem;font-weight:300;}
+    .movement p:last-child{margin-bottom:0;}
+    .movement p strong{color:var(--text);font-weight:600;}
+    .math{margin:2rem 0;padding:1.5rem 2rem;border:1px solid var(--border);
+      border-left:3px solid var(--gold-dim);background:var(--gold-faint);
+      font-family:'DM Mono',monospace;font-size:.85rem;color:var(--text);line-height:1.8;}
+    .math-label{font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;
+      color:var(--gold-dim);margin-bottom:.6rem;display:block;}
+    .pull{margin:2rem 0;padding:1.5rem 0 1.5rem 2rem;border-left:2px solid var(--gold);
+      font-size:1.15rem;font-style:italic;color:var(--text);font-weight:300;line-height:1.6;}
+    .break-note{margin:2rem 0;padding:1.5rem 2rem;border:1px solid var(--border);
+      border-left:3px solid var(--text-faint);}
+    .break-note p{font-size:.92rem;color:var(--text-dim);}
+    .coda{padding:6rem 0;border-top:1px solid var(--border);}
+    .coda h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;color:var(--text);
+      margin-bottom:2.5rem;letter-spacing:-.01em;}
+    .coda p{font-size:1.05rem;line-height:1.9;color:var(--text-dim);margin-bottom:1.3rem;font-weight:300;}
+    .coda .final{margin-top:3rem;font-size:1.3rem;font-style:italic;color:var(--text);
+      font-weight:300;line-height:1.6;}
+    .coda .final em{color:var(--gold);font-style:normal;}
+    .attribution{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);
+      font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;
+      color:var(--text-faint);line-height:1.8;}
+    footer{padding:3rem 0;border-top:1px solid var(--border);display:flex;
+      justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+    footer span{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.15em;
+      text-transform:uppercase;color:var(--text-faint);}
+    footer a{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.15em;
+      text-transform:uppercase;color:var(--gold-dim);text-decoration:none;transition:color .2s;}
+    footer a:hover{color:var(--gold);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+    @media(max-width:600px){body{font-size:18px;}nav{padding:1rem 1.2rem;}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}
+      canvas{display:none;}.movement{opacity:1;transform:none;}}
+  </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="progress"></div>
+<nav>
+  <a href="index.html">← Quantum Echoes</a>
+  <span class="nav-title">Version II — With the Mathematics</span>
+  <a href="lyric.html">Lyric Essay →</a>
+</nav>
+<header>
+  <p class="eyebrow">Version II &nbsp;·&nbsp; A Lyric Essay on Music, Acoustics &amp; the Physics of Vibration</p>
+  <h1>Quantum Echoes:<br /><em>What Music Discovered</em><br />Before Physics Named It</h1>
+  <p class="subtitle">This essay does not claim that music is quantum mechanical. It claims something narrower and more defensible: that musical practice and quantum mechanics are both constrained by the same underlying physics of vibration — and that musicians arrived at the structural consequences of those constraints long before the formalism existed to describe them.</p>
+  <div class="scroll-hint">Scroll to begin</div>
+</header>
+<main><article><div class="container">
+
+  <section class="intro">
+    <p>Where the mathematics holds, it is stated plainly. Where the parallel is structural analogy rather than physical equivalence, that distinction is made. The argument does not require mysticism. It requires only that we take seriously what musicians already knew how to do.</p>
+  </section>
+
+  <!-- MOVEMENT I -->
+  <div class="movement">
+    <p class="movement-number">Movement I</p>
+    <h2><em>Quantization</em></h2>
+    <h3>The Discrete World Hidden Inside Continuous Sound</h3>
+    <p>In 1900, Max Planck proposed that energy is not continuous but comes in discrete packets — quanta — proportional to frequency: E = hf. The insight was revolutionary. It was also, in a precise mathematical sense, already present in every plucked string.</p>
+    <div class="math">
+      <span class="math-label">Vibrating string — quantized modes</span>
+      f_n = nf₁ &nbsp;&nbsp; where n = 1, 2, 3, 4...
+    </div>
+    <p>The boundary conditions force the system into discrete states. The continuous physical world of a vibrating medium resolves, under constraint, into countable packets. This is not analogy to quantization. It is quantization. The mathematics are identical in form to the quantum particle in a box:</p>
+    <div class="math">
+      <span class="math-label">Quantum particle in a box</span>
+      E_n = n²π²ℏ²/2mL²
+    </div>
+    <p>Pythagoras discovered this in the sixth century BCE — the quantized mode structure of a one-dimensional resonator, formalized in quantum mechanics two and a half millennia later.</p>
+    <div class="pull">The overtone series is the oldest known encounter between human practice and the discrete structure of physical reality.</div>
+  </div>
+
+  <!-- MOVEMENT II -->
+  <div class="movement">
+    <p class="movement-number">Movement II</p>
+    <h2><em>Superposition</em></h2>
+    <h3>One Source, Many Simultaneous States</h3>
+    <p>Any periodic sound wave can be decomposed into a sum of sinusoidal components:</p>
+    <div class="math">
+      <span class="math-label">Fourier series decomposition of a sound wave</span>
+      f(t) = Σ aₙsin(nωt + φₙ)
+    </div>
+    <p>What sounds like a single note is in fact a superposition of many simultaneous frequencies. The Fourier decomposition of a sound wave and the expansion of a quantum state in an energy eigenstate basis share the same mathematical structure.</p>
+    <p><strong>Tibetan overtone chanting and Tuvan throat singing</strong> — developed independently, on opposite sides of Central Asia — both discovered that the human voice can produce multiple simultaneous pitches from a single source, making individual terms of the Fourier series audible as distinct pitches. One body. One breath. Multiple simultaneous frequency components.</p>
+    <p><strong>The didgeridoo</strong> of Aboriginal Australia extends this discovery to its logical limit. Using circular breathing — inhalation through the nose simultaneous with exhalation through the mouth — the player sustains a drone that never stops. No attack, no decay, no silence. Against this permanent steady state, the player shapes harmonic content in real time through vocal tract manipulation, producing a continuously morphing superposition of overtones. The instrument is a physical Fourier synthesizer sustaining an open acoustic field indefinitely.</p>
+    <div class="math">
+      <span class="math-label">Circular breathing — continuous acoustic state</span>
+      Drone: f₀ continuous &nbsp;·&nbsp; Harmonics: Σ aₙ(t)sin(nω₀t + φₙ(t))
+    </div>
+    <p>Where throat singing makes the superposition structure audible, the didgeridoo sustains it without interruption. The field never collapses because the fundamental never stops. Physics would describe this as a sustained open system continuously interacting with its environment. The Aboriginal Australian traditions embed this in Dreamtime — the ontological layer in which past, present, and future coexist simultaneously. The instrument of the permanent drone is the instrument of the state that never resolves into linear time.</p>
+    <p><strong>Spectral composition</strong> made the Fourier structure explicit. Grisey's <em>Partiels</em> (1975) opens with a Fourier analysis of a single trombone note and builds the entire orchestral piece from its frequency components. Xenakis applied Maxwell-Boltzmann statistical mechanics to string swarms in <em>Pithoprakta</em> (1956) — composing ensemble distribution rather than individual paths. He made Maxwell's demon play violin.</p>
+    <div class="pull">These composers did not discover superposition in music. They named what performers in Tibet, Tuva, and Aboriginal Australia had been inhabiting for millennia.</div>
+  </div>
+
+  <!-- MOVEMENT III -->
+  <div class="movement">
+    <p class="movement-number">Movement III</p>
+    <h2><em>Interference and Non-Locality</em></h2>
+    <h3>The Wave That Exists Between Sources</h3>
+    <p>When two waves of frequencies f₁ and f₂ occupy the same medium simultaneously:</p>
+    <div class="math">
+      <span class="math-label">Wave interference — beating frequency</span>
+      y(t) = sin(2πf₁t) + sin(2πf₂t)<br />
+      &nbsp;&nbsp;&nbsp;&nbsp; = 2cos(π(f₁−f₂)t) · sin(π(f₁+f₂)t)
+    </div>
+    <p>The beating frequency |f₁−f₂| is a real interference phenomenon. It is not in either source. It exists only in their interaction. Three traditions independently discovered that this interference phenomenon could be composed with.</p>
+    <p><strong>Indonesian gamelan</strong> instruments are deliberately tuned in pairs 5 to 8 Hz apart. The shimmering resonance is the beating frequency. The music exists between the sources, not in them.</p>
+    <p><strong>The mbira dzavadzimu</strong> of Zimbabwe operates on two tonal systems tuned to overlap but not align — producing interference beats as a structural feature. The spirit voices exist in no single component, only in their interaction.</p>
+    <p><strong>Bulgarian women's choral tradition</strong> sustains seconds and augmented seconds — the pulsing interference wave between voices a half step apart is the intended sound. The dissonance is not in transit. It is the destination.</p>
+    <p><strong>Notre Dame polyphony</strong> was written for reverberation times of eight to nine seconds — the voice interferes with its own past still sounding in the stone. The architecture performs the interference between present and past.</p>
+    <p>The Siku tradition of the Andes extends the interference principle into its most structurally precise form: compositionally enforced non-locality.</p>
+    <p><strong>The Siku</strong> — Andean panpipes (~2000 BCE, Peru, Bolivia, Chile) — is deliberately divided between two players. One holds the ira (odd-numbered pipes), the other the arca (even-numbered pipes). Neither can produce the melody alone. The melody exists only in the alternation between them — in the space between two players, in the temporal relation between their alternating breaths.</p>
+    <div class="math">
+      <span class="math-label">Sikuri non-locality — melody as relation</span>
+      Melody ≠ ira &nbsp;·&nbsp; Melody ≠ arca &nbsp;·&nbsp; Melody = ira ⊗ arca
+    </div>
+    <p>Remove either player and the melody does not become incomplete — it ceases to exist entirely. The musical information is distributed across two physically separate systems such that neither system contains it independently. This is compositionally enforced non-locality: the observable is a property of the relation between components, not of any component individually.</p>
+    <div class="pull">The Sikuri tradition is not accompaniment. It is not call and response. It is a performance practice in which two bodies constitute a single indivisible musical system. The melody lives in the between.</div>
+  </div>
+
+  <!-- MOVEMENT IV -->
+  <div class="movement">
+    <p class="movement-number">Movement IV</p>
+    <h2><em>The Acoustic Uncertainty Principle</em></h2>
+    <h3>The Tradeoff That Runs Through All of Music</h3>
+    <div class="math">
+      <span class="math-label">Heisenberg uncertainty principle</span>
+      ΔxΔp ≥ ℏ/2
+    </div>
+    <div class="math">
+      <span class="math-label">Gabor limit — acoustic uncertainty principle</span>
+      Δf · Δt ≥ 1/4π
+    </div>
+    <p>A sound cannot simultaneously have a precisely defined frequency and a precisely defined moment of occurrence. This follows from the same underlying mathematics as Heisenberg — the Fourier uncertainty relation, which holds for any wave phenomenon. Quantum mechanics and acoustics are both constrained by the same fundamental tradeoff between localization in conjugate domains.</p>
+    <p><strong>The Vedic shruti system</strong> — oral tradition predating written notation, formally expressed in Bharata's Natya Shastra (~200 BCE–200 CE) — identifies twenty-two microtonal gradations within an octave as regions of pitch, not fixed targets. As pitch becomes more precisely located, the expressive field narrows. The performer trades frequency precision for depth of resonance. That is the Gabor limit, navigated through practice.</p>
+    <p><strong>Carnatic gamaka</strong> means a svara is approached but rarely inhabited as a fixed point. The performer deliberately trades frequency precision for temporal richness. The unornamented note — the eigenstate — is a limiting case, not the default.</p>
+    <p><strong>Persian dastgah</strong> encodes pitch as context-dependent — the same interval functioning differently depending on what precedes and follows it. Meaning is relational rather than positional.</p>
+    <p><strong>Dhrupad's alap</strong> sustains musical indeterminacy until the performer chooses to end it. The tanpura drone provides the reference frequency — the classical reference frame within which the uncertainty of the solo voice is defined. When the metered section enters, the field resolves. The alap's continuous uncertainty gives way to the defined trajectory of rhythm.</p>
+    <div class="pull">Musicians have been navigating the acoustic uncertainty principle for millennia — not as abstract mathematics, but as felt experience carried in the body and transmitted through practice.</div>
+  </div>
+
+  <!-- MOVEMENT V -->
+  <div class="movement">
+    <p class="movement-number">Movement V</p>
+    <h2><em>Superposition as Ceremony</em></h2>
+    <h3>The Ghost Dance — Great Plains, 1889</h3>
+    <p>In 1889, a Paiute holy man named Wovoka received a vision during a solar eclipse. What emerged spread across the decimated nations of the Great Plains: the Ghost Dance — a circular, continuous ritual designed to hold two states open simultaneously.</p>
+    <p>The sonic structure is precise. A steady drum pulse provides the reference frequency — the drone, the observer — against which the dancers' voices exist in sustained collective indeterminacy. The voices do not sing a fixed melody. They inhabit a field of sound that shifts with the movement of the circle, with the trance state of individual dancers, with the duration of the ceremony. The ritual is designed to remain open — to resist resolution — for as long as the community can sustain it.</p>
+    <p>The quantum resonance here is cosmological. The Ghost Dance was organized around a specific ontological premise: that the living and the dead do not occupy separate states. They coexist in the same ceremonial space, unresolved, simultaneous — until the ritual ends and the field collapses back into ordinary time.</p>
+    <div class="break-note">
+      <p>The United States government suppressed the Ghost Dance with violence. Wounded Knee followed in 1890. This belongs in the historical record of the essay: the cost of holding two states open was paid in full. The Ghost Dance is not included here as physics. It is included because it is the most explicit ceremonial enactment of superposition in the record — and because the suppression of it tells us something about what deterministic power structures do when they encounter systems that refuse to collapse.</p>
+    </div>
+    <div class="pull">What was feared was not the dancing. What was feared was a people who had built a ceremony around the refusal to accept that two states could not coexist.</div>
+  </div>
+
+  <!-- MOVEMENT VI -->
+  <div class="movement">
+    <p class="movement-number">Movement VI</p>
+    <h2><em>The Qubit Question</em></h2>
+    <h3>The Boundary Case</h3>
+    <p>The natural question the preceding movements raise: if music instantiates quantization, superposition, interference, and the acoustic uncertainty principle — does it have an analog to the qubit?</p>
+    <div class="math">
+      <span class="math-label">Qubit — two-state quantum superposition</span>
+      |ψ⟩ = α|0⟩ + β|1⟩ &nbsp;&nbsp; where |α|² + |β|² = 1
+    </div>
+    <p>Mostly no. And that honesty matters.</p>
+    <p>Pitch is continuous, not two-state. Rhythm is multivalued. Timbre is a full Fourier spectrum. None of these map onto a two-level quantum system in any rigorous sense. Binary percussion — a drum stroke either lands or it doesn't — is genuinely two-state, and in polyrhythmic traditions the on/off decision of any single instrument is correlated with the ensemble state in ways that make local description incomplete. That is structurally closer to a qubit embedded in a multi-qubit register than anything else in music. But it is not a qubit.</p>
+    <p>The closest music comes is not a note. It is a tonal ambiguity held in suspension.</p>
+    <p>The tritone — the interval of an augmented fourth, exactly halfway across the octave — is maximally ambiguous. Before resolution it genuinely occupies two functional states simultaneously: dominant and subdominant, tension pointing both ways with equal force. The composer's choice of resolution is the measurement event. The tritone collapses into one state. The other possibility ceases to exist.</p>
+    <p>Wagner built his late harmonic language on the systematic refusal to collapse. The opening chord of <em>Tristan und Isolde</em> — four notes, unresolved, pointing in multiple directions simultaneously — is held in functional superposition for four hours. The opera's harmonic language defers measurement. Tonality — the ground state — is withheld until the final bars.</p>
+    <div class="math">
+      <span class="math-label">Tristan chord — functional two-state superposition</span>
+      |Tristan⟩ ≈ α|dominant⟩ + β|subdominant⟩ &nbsp;&nbsp; unresolved for ~4 hours
+    </div>
+    <p>The Tristan chord is not quantum mechanical. The amplitudes are not complex numbers in the Hilbert space sense. There is no physical decoherence. But the functional structure — a two-state system in superposition, resisting collapse, deriving its power from the duration of its undecidedness — is precise enough to be instructive.</p>
+    <div class="pull">Wagner held it in coherence for four hours. Current quantum processors struggle to maintain coherence for microseconds. The comparison does not favor the processors.</div>
+    <p>This is where the isomorphism ends — and what that boundary reveals is important. The qubit question exposes the limit of the musical-quantum parallel not as a failure but as a clarification: music and quantum mechanics share wave physics, but diverge at the level of two-state computational structure. The boundary is not empty. It is precisely defined. And Wagner is standing right at it.</p>
+  </div>
+
+  <!-- MOVEMENT VII -->
+  <div class="movement">
+    <p class="movement-number">Movement VII</p>
+    <h2><em>Where the Parallel Breaks</em></h2>
+    <h3>Honesty About the Limits</h3>
+    <p>Quantum mechanics describes phenomena that have no musical analog.</p>
+    <div class="break-note">
+      <p><strong>Entanglement</strong> — the correlation of quantum states such that one cannot be described independently of another regardless of spatial separation — has no acoustic equivalent. Musical ensemble behavior in which voices become mutually dependent is better described by systems theory or gestalt psychology. The Baka and Mbuti polyphonic traditions are genuine and remarkable. They are not quantum entanglement. That word was used in an earlier draft and should not have been.</p>
+    </div>
+    <div class="break-note">
+      <p><strong>Wavefunction collapse</strong> as a compositional metaphor is evocative but imprecise. Whether the transition from alap to metered section, or the harpsichord cadenza in Brandenburg No. 5, maps onto the measurement problem in quantum theory depends on interpretations that remain genuinely contested. The analogy is interesting. It is not a claim.</p>
+    </div>
+    <div class="break-note">
+      <p><strong>Quantum tunneling</strong> has no musical equivalent. The blue note — the microtonal pitch inflection between equal-tempered positions in blues and jazz — is a genuine and important musical phenomenon rooted in West African microtonal vocal practice. Describing it as tunneling through a classically forbidden barrier is a metaphor. A good one. Not a physical equivalence.</p>
+    </div>
+    <div class="pull">Musicians did not discover quantum mechanics. They discovered what quantum mechanics also describes.</div>
+  </div>
+
+  <!-- CODA -->
+  <section class="coda">
+    <h2>Coda: What the Mathematics Shows</h2>
+    <p>The through-line across this chronology is not mystical convergence. It is physics.</p>
+    <p>Sound is a wave phenomenon. Wave phenomena are governed by mathematics that produces quantization under boundary conditions, superposition of frequency components, interference between sources, and fundamental tradeoffs between time and frequency localization. These are not cultural constructs. They are physical facts about vibrating media.</p>
+    <p>Musical traditions that listen carefully enough, and long enough, and with enough structural intention, encounter these facts. Not as abstract mathematics — as felt experience, as aesthetic discovery, as spiritual practice, as community knowledge carried in the body and transmitted through performance.</p>
+    <p>The Shona mbira builder engineering interference between two tonal systems. The Balinese gamelan tuner setting paired instruments 6 Hz apart. The Carnatic vocalist navigating pitch as a continuous field. The Tibetan monk discovering that a single throat contains multiple simultaneous frequencies. The didgeridoo player sustaining a field that never collapses. The two Sikuri players whose alternating breath holds a melody that neither can carry alone. The Ghost Dance community holding two states — living and dead — open in a circle until the government arrived to force the collapse.</p>
+    <p>Physics formalized the mathematics in the late nineteenth and early twentieth centuries. The formalization was genuine and important. But the structural insights were older — discovered through practice, not proof.</p>
+    <div class="final">
+      Different tools. Different traditions.<br />
+      Different intentions entirely.<br /><br />
+      <em>The same physics, discovered from the inside.</em>
+    </div>
+    <div class="attribution">
+      This essay was developed through adversarial multi-AI review (Claude, DeepSeek, Perplexity, GPT, Gemini) and red-team critique before final revision. The mathematical claims have been held to physical accuracy. Where the parallel breaks, it is said plainly. The lyric claims have been held to honesty about what they are.
+    </div>
+  </section>
+
+  <footer>
+    <span>Solbakken Research Initiative &nbsp;·&nbsp; 2026</span>
+    <a href="https://github.com/bluebflatminor/quantum-echoes" target="_blank" rel="noopener">github.com/bluebflatminor</a>
+  </footer>
+
+</div></article></main>
+
+<script>
+  const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+  let W,H,scrollY=0,frame=0;
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  function getColor(){return getComputedStyle(document.documentElement).getPropertyValue('--wave-color').trim()||'#c9a84c';}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const t=frame*0.008,scroll=scrollY*0.001,isMobile=W<768,color=getColor();
+    const waves=isMobile?[{f:.008,a:40,s:.6,p:0}]:[{f:.008,a:60,s:.6,p:0},{f:.013,a:35,s:.9,p:2.1},{f:.021,a:20,s:1.4,p:4.3},{f:.005,a:80,s:.4,p:1.1}];
+    waves.forEach((w,i)=>{
+      ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=.8;ctx.globalAlpha=.4/(i+1);
+      for(let x=0;x<=W;x+=2){
+        const v=Math.sin(x*w.f+t*w.s+w.p+scroll)+Math.sin(x*w.f*1.618+t*w.s*.7+scroll*.5);
+        const y=H/2+v*w.a;x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    });
+    ctx.globalAlpha=1;frame++;requestAnimationFrame(draw);
+  }
+  draw();
+  const progressBar=document.getElementById('progress');
+  window.addEventListener('scroll',()=>{
+    scrollY=window.scrollY;
+    const total=document.body.scrollHeight-window.innerHeight;
+    progressBar.style.width=(total>0?(scrollY/total)*100:0)+'%';
+  });
+  const movements=document.querySelectorAll('.movement');
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
+  },{threshold:.08});
+  movements.forEach(m=>observer.observe(m));
+</script>
+</body>
+</html>
