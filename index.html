@@ -208,10 +208,8 @@
     .door:hover .door-arrow { color: var(--gold); transform: translateX(4px); }
 
     .foot {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
+      position: relative;
+      margin-top: 3rem;
       font-family: 'DM Mono', monospace;
       font-size: 0.55rem;
       letter-spacing: 0.2em;
@@ -220,7 +218,7 @@
       z-index: 1;
       opacity: 0;
       animation: rise 1s ease 1.3s forwards;
-      white-space: nowrap;
+      text-align: center;
     }
 
     .foot a {
@@ -242,9 +240,12 @@
       .stage > *, .foot { opacity: 1 !important; transform: none !important; }
     }
 
-    @media (max-width: 520px) {
-      .door { width: 100%; max-width: 320px; }
-      .doors { flex-direction: column; align-items: center; }
+    @media (max-width: 600px) {
+      body { overflow-y: auto; justify-content: flex-start; padding: 3rem 1.2rem 4rem; }
+      .stage { padding: 0; width: 100%; }
+      .door { width: 100%; max-width: 100%; }
+      .doors { flex-direction: column; align-items: stretch; width: 100%; }
+      h1 { font-size: clamp(3rem, 12vw, 4.5rem); }
     }
 
   </style>
@@ -273,11 +274,10 @@
       <span class="door-arrow">→</span>
     </a>
   </div>
+  <p class="foot">
+    <a href="https://github.com/bluebflatminor/quantum-echoes" target="_blank" rel="noopener">github.com/bluebflatminor/quantum-echoes</a>
+  </p>
 </div>
-
-<p class="foot">
-  <a href="https://github.com/bluebflatminor/quantum-echoes" target="_blank" rel="noopener">github.com/bluebflatminor/quantum-echoes</a>
-</p>
 
 <script>
   const canvas = document.getElementById('c');
