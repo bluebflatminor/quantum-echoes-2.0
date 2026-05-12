@@ -93,6 +93,94 @@
     @media(max-width:600px){body{font-size:18px;}nav{padding:1rem 1.2rem;}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}
       canvas{display:none;}.movement{opacity:1;transform:none;}}
+
+    /* ── CLOSING SECTION ── */
+    .closing {
+      padding: 6rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .closing h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 300;
+      color: var(--text);
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .closing-intro {
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--text-dim);
+      font-weight: 300;
+      margin-bottom: 3rem;
+      line-height: 1.7;
+    }
+
+    .tradition-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 4rem;
+    }
+
+    .tradition-item {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 2rem;
+      padding: 1.4rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .tradition-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--gold);
+      line-height: 1.4;
+      padding-top: 0.1rem;
+    }
+
+    .tradition-desc {
+      font-size: 0.92rem;
+      color: var(--text-dim);
+      font-weight: 300;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .invitation {
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+
+    .invitation p {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--text-dim);
+      font-weight: 300;
+      margin-bottom: 1.3rem;
+    }
+
+    .invitation p:last-child { margin-bottom: 0; }
+
+    .listen {
+      font-size: 1.4rem !important;
+      font-style: italic;
+      color: var(--gold) !important;
+      font-weight: 300;
+      margin-top: 2rem !important;
+      letter-spacing: 0.02em;
+    }
+
+    @media (max-width: 600px) {
+      .tradition-item {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -274,6 +362,50 @@
     </div>
     <div class="attribution">
       This essay was developed through adversarial multi-AI review (Claude, DeepSeek, Perplexity, GPT, Gemini) and red-team critique before final revision. The mathematical claims have been held to physical accuracy. Where the parallel breaks, it is said plainly. The lyric claims have been held to honesty about what they are.
+    </div>
+  </section>
+
+
+  <section class="closing">
+    <h2>Where Else to Listen</h2>
+    <p class="closing-intro">The traditions in this essay are not the complete record. These are some of the doors left unopened.</p>
+
+    <div class="tradition-list">
+      <div class="tradition-item">
+        <span class="tradition-name">Maqam</span>
+        <span class="tradition-desc">Arabic, Turkish, and Persian modal music. Quarter-tone inflection built into the system structurally. Pitch as context-dependent field across the Arab world, North Africa, and the Ottoman tradition.</span>
+      </div>
+      <div class="tradition-item">
+        <span class="tradition-name">Chinese Qin</span>
+        <span class="tradition-desc">The seven-stringed zither of classical Chinese music, documented for three thousand years. Harmonics, sliding tones, and a tonal philosophy in which silence and sound carry equal weight. The space between notes as compositional material.</span>
+      </div>
+      <div class="tradition-item">
+        <span class="tradition-name">Hindustani Khayal</span>
+        <span class="tradition-desc">North Indian classical improvisation. Each performance a unique, unrepeatable path through the same raga probability space. The wave does not repeat.</span>
+      </div>
+      <div class="tradition-item">
+        <span class="tradition-name">Noh Theatre Music</span>
+        <span class="tradition-desc">Fourteenth-century Japan. The concept of ma — the sustained, deliberate pause — as a held field of potential between sounds. Meaning living in the interval, not the event.</span>
+      </div>
+      <div class="tradition-item">
+        <span class="tradition-name">West African Polyrhythm</span>
+        <span class="tradition-desc">Ewe, Yoruba, Dagomba traditions of Ghana and Nigeria. Multiple simultaneous rhythmic cycles of different lengths creating interference fields that resolve only at mathematically calculated intervals. The root system from which samba, blues, and jazz all grew.</span>
+      </div>
+      <div class="tradition-item">
+        <span class="tradition-name">Steve Reich and Minimalism</span>
+        <span class="tradition-desc">Phase music. Two identical patterns shifted slightly out of sync produce a continuously evolving interference field. The gamelan principle arrived at consciously by a composer who studied West African drumming and Balinese gamelan simultaneously.</span>
+      </div>
+      <div class="tradition-item">
+        <span class="tradition-name">Flamenco</span>
+        <span class="tradition-desc">Andalusia. The duende — the unrepeatable, ineffable moment of full presence in performance — as a collapse event. The performance builds toward a state that cannot be planned, only arrived at. When it happens, everyone in the room knows. That is measurement.</span>
+      </div>
+    </div>
+
+    <div class="invitation">
+      <p>This essay began with a simple question: did music know something before physics named it? The answer that emerged was not yes or no. It was more interesting than that — the same physical constraints that govern quantum systems govern sound, and human beings attending carefully enough to sound, across every culture and every century, kept arriving at the same structural discoveries through completely different routes.</p>
+      <p>That pattern is an invitation. Not to conclude that music and physics are secretly the same thing. But to ask what else might be hiding in plain sight — in traditions not yet examined, in instruments not yet listened to carefully enough, in the space between a note and the next note in a tradition you have never heard.</p>
+      <p>The physics of vibration is universal. The human response to it is inexhaustible. There is more here than any single essay can hold.</p>
+      <p class="listen">Listen further.</p>
     </div>
   </section>
 
