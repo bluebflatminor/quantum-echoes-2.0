@@ -1,4 +1,4 @@
-## Quantum Echoes: What Music Knew Before Physics
+# Quantum Echoes: What Music Knew Before Physics
 
 A lyric essay on music, physics, and what structure recognizes in itself.
 
